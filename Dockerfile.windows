@@ -1,17 +1,15 @@
-FROM microsoft/dotnet:1.1-sdk-msbuild-nanoserver
+# escape=`
+
+FROM microsoft/dotnet:1.1.1-sdk-nanoserver
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-RUN New-Item -Path \MusicStore\samples\MusicStore -Type Directory
-RUN New-Item -Path build -Type Directory
-WORKDIR MusicStore
-
-ADD samples/MusicStore/MusicStore.csproj samples/MusicStore/MusicStore.csproj
-ADD NuGet.config .
-ADD build/dependencies.props build/dependencies.props
-RUN dotnet restore .\samples\MusicStore
-
+WORKDIR \MusicStore
 ADD samples samples
+ADD NuGet.config .
+ADD build build
+
+RUN dotnet restore .\samples\MusicStore
 RUN dotnet build .\samples\MusicStore
 
 EXPOSE 5000
